@@ -261,8 +261,6 @@ export default function App() {
         setTimeout(() => setToast(''), 3500);
     };
 
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
     // Hàm gọi AI Gemini
     const callGemini = async (prompt, systemInstruction = "", msg = "Đang xử lý...") => {
         setLoading(true);
@@ -274,12 +272,12 @@ export default function App() {
         
         const executeRequest = async () => {
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+                const response = await fetch('/api/gemini', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        systemInstruction: { parts: [{ text: systemInstruction }] }
+                        prompt,
+                        systemInstruction
                     })
                 });
 
