@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import WriterAssistant from './components/WriterAssistant.jsx';
 
 // ==================== CÁC BỘ TIÊU CHÍ CHẤM ĐIỂM CHUẨN MẦM NON ====================
 const PRESET_CRITERIA_SETS = [
@@ -149,7 +150,7 @@ const SAMPLE_TOPICS = [
 
 export default function App() {
     // Mode chính: 'writer' (Trợ lý soạn thảo) hoặc 'evaluator' (Chấm điểm sáng kiến)
-    const [appMode, setAppMode] = useState('writer');
+    const [appMode, setAppMode] = React.useState('writer');
 
     // State Module Soạn thảo
     const [step, setStep] = useState(1);
@@ -966,6 +967,38 @@ Kết quả: ${formData.results}`;
                 {/* PHẦN 1: TRỢ LÝ SOẠN THẢO SKKN                             */}
                 {/* ========================================================= */}
                 {appMode === 'writer' && (
+                    <WriterAssistant
+                        step={step}
+                        setStep={setStep}
+                        formData={formData}
+                        setFormData={setFormData}
+                        level={level}
+                        setLevel={setLevel}
+                        result={result}
+                        loading={loading}
+                        loadingMessage={loadingMessage}
+                        advSuggestions={advSuggestions}
+                        diffSuggestions={diffSuggestions}
+                        measureSuggestions={measureSuggestions}
+                        suggestingField={suggestingField}
+                        onSuggestField={handleSuggestField}
+                        onAppendSuggestion={appendSuggestion}
+                        onAppendAllSuggestions={appendAllSuggestions}
+                        onPresetSuggestions={applyPresetSuggestions}
+                        onOptimizeTitle={handleOptimizeTitle}
+                        onGenerateOutline={handleGenerateOutline}
+                        onGenerateFullText={handleGenerateFullText}
+                        onExportWord={handleExportWriterWord}
+                        onTransferToEvaluator={transferToEvaluator}
+                        onCopyResult={() => {
+                            if (!result) return;
+                            navigator.clipboard.writeText(result);
+                            showNotification("Đã sao chép toàn bộ bài viết!");
+                        }}
+                        onOpenTemplates={() => setShowTemplatesModal(true)}
+                    />
+                )}
+                {false && (
                     <div className="space-y-4">
                         {/* Thanh chỉ mục tiến trình */}
                         <div className="flex justify-between mb-4 bg-white/90 p-2 rounded-2xl backdrop-blur-md overflow-x-auto gap-2 border-2 border-emerald-200 shadow-md">
