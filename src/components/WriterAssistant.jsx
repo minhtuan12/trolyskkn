@@ -71,6 +71,8 @@ export default function WriterAssistant({
   advSuggestions,
   diffSuggestions,
   measureSuggestions,
+  titleSuggestions,
+  outline,
   suggestingField,
   onSuggestField,
   onAppendSuggestion,
@@ -78,6 +80,8 @@ export default function WriterAssistant({
   onPresetSuggestions,
   onOptimizeTitle,
   onGenerateOutline,
+  onApplyTitle,
+  onClearSuggestions,
   onGenerateFullText,
   onExportWord,
   onTransferToEvaluator,
@@ -137,12 +141,12 @@ export default function WriterAssistant({
               <div className="rounded-2xl border-2 border-emerald-100 bg-emerald-50/60 p-4">
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2"><label htmlFor="writer-advantages" className="text-sm font-black text-emerald-900">Thuận lợi</label><div className="flex gap-2"><button type="button" onClick={() => onPresetSuggestions('advantages')} className="min-h-11 rounded-lg border border-emerald-200 bg-white px-3 text-xs font-bold text-emerald-800">Mẫu sẵn</button><button type="button" onClick={() => onSuggestField('advantages')} className="min-h-11 rounded-lg bg-emerald-700 px-3 text-xs font-black text-white">{suggestingField === 'advantages' ? 'Đang chọn…' : 'Gợi ý'}</button></div></div>
                 <textarea id="writer-advantages" className={`${fieldClass} min-h-36 resize-none`} value={formData.advantages} onChange={(event) => updateField('advantages', event.target.value)} />
-                <SuggestionList items={advSuggestions} onAdd={(text) => onAppendSuggestion('advantages', text)} onAddAll={() => onAppendAllSuggestions('advantages', advSuggestions)} onClear={() => onAppendAllSuggestions('advantages', [])} />
+                <SuggestionList items={advSuggestions} onAdd={(text) => onAppendSuggestion('advantages', text)} onAddAll={() => onAppendAllSuggestions('advantages', advSuggestions)} onClear={() => onClearSuggestions('advantages')} />
               </div>
               <div className="rounded-2xl border-2 border-rose-100 bg-rose-50/60 p-4">
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2"><label htmlFor="writer-difficulties" className="text-sm font-black text-rose-900">Khó khăn</label><div className="flex gap-2"><button type="button" onClick={() => onPresetSuggestions('difficulties')} className="min-h-11 rounded-lg border border-rose-200 bg-white px-3 text-xs font-bold text-rose-800">Mẫu sẵn</button><button type="button" onClick={() => onSuggestField('difficulties')} className="min-h-11 rounded-lg bg-rose-700 px-3 text-xs font-black text-white">{suggestingField === 'difficulties' ? 'Đang chọn…' : 'Gợi ý'}</button></div></div>
                 <textarea id="writer-difficulties" className={`${fieldClass} min-h-36 resize-none border-rose-200 focus:border-rose-600 focus:ring-rose-100`} value={formData.difficulties} onChange={(event) => updateField('difficulties', event.target.value)} />
-                <SuggestionList items={diffSuggestions} tone="rose" onAdd={(text) => onAppendSuggestion('difficulties', text)} onAddAll={() => onAppendAllSuggestions('difficulties', diffSuggestions)} onClear={() => onAppendAllSuggestions('difficulties', [])} />
+                <SuggestionList items={diffSuggestions} tone="rose" onAdd={(text) => onAppendSuggestion('difficulties', text)} onAddAll={() => onAppendAllSuggestions('difficulties', diffSuggestions)} onClear={() => onClearSuggestions('difficulties')} />
               </div>
             </div>
 
@@ -158,6 +162,16 @@ export default function WriterAssistant({
             <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.16em] text-sky-700">Bước 2 · Trọng tâm sáng kiến</p><h3 className="mt-1 text-xl font-black text-slate-900">Chọn tên đề tài rõ trọng tâm</h3><p className="mt-1 text-sm text-slate-600">Tên tốt nêu rõ giải pháp, nhóm trẻ và kết quả giáo dục cần cải thiện.</p></div><button type="button" onClick={onOpenTemplates} className="min-h-11 rounded-xl border-2 border-sky-200 bg-sky-50 px-4 text-xs font-black text-sky-800 hover:bg-sky-100">Mẫu đề tài hay</button></header>
             <div><label htmlFor="writer-title" className="mb-1 block text-sm font-black text-slate-800">Ý tưởng hoặc tên đề tài</label><textarea id="writer-title" className={`${fieldClass} min-h-28 resize-none`} value={formData.title} onChange={(event) => updateField('title', event.target.value)} placeholder="Nhập ý tưởng cốt lõi hoặc chọn một gợi ý bên dưới" /></div>
             <button type="button" onClick={onOptimizeTitle} className="min-h-11 rounded-xl bg-sky-700 px-5 text-sm font-black text-white shadow hover:bg-sky-800">Gợi ý 6 tên đề tài</button>
+            {titleSuggestions.length > 0 && (
+              <div className="grid gap-3 lg:grid-cols-2">
+                {titleSuggestions.map((title) => (
+                  <article key={title} className="rounded-2xl border-2 border-sky-100 bg-sky-50/60 p-4">
+                    <p className="text-sm font-bold leading-relaxed text-slate-800">{title}</p>
+                    <button type="button" aria-label={`Áp dụng tên đề tài: ${title}`} onClick={() => onApplyTitle(title)} className="mt-3 min-h-11 rounded-xl bg-white px-3 text-xs font-black text-sky-800 shadow-sm hover:bg-sky-100">Áp dụng tên đề tài</button>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -167,10 +181,16 @@ export default function WriterAssistant({
             <div className="rounded-2xl border-2 border-teal-100 bg-teal-50/60 p-4">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2"><label htmlFor="writer-measures" className="text-sm font-black text-teal-900">Các biện pháp thực hiện</label><div className="flex gap-2"><button type="button" onClick={() => onPresetSuggestions('measures')} className="min-h-11 rounded-lg border border-teal-200 bg-white px-3 text-xs font-bold text-teal-800">Biện pháp mẫu</button><button type="button" onClick={() => onSuggestField('measures')} className="min-h-11 rounded-lg bg-teal-700 px-3 text-xs font-black text-white">{suggestingField === 'measures' ? 'Đang chọn…' : 'AI gợi ý'}</button></div></div>
               <textarea id="writer-measures" className={`${fieldClass} min-h-40 resize-none`} value={formData.measures} onChange={(event) => updateField('measures', event.target.value)} />
-              <SuggestionList items={measureSuggestions} onAdd={(text) => onAppendSuggestion('measures', text)} onAddAll={() => onAppendAllSuggestions('measures', measureSuggestions)} onClear={() => onAppendAllSuggestions('measures', [])} />
+              <SuggestionList items={measureSuggestions} onAdd={(text) => onAppendSuggestion('measures', text)} onAddAll={() => onAppendAllSuggestions('measures', measureSuggestions)} onClear={() => onClearSuggestions('measures')} />
             </div>
             <div><label htmlFor="writer-results" className="mb-1 block text-sm font-black text-slate-800">Kết quả và minh chứng dự kiến</label><textarea id="writer-results" className={`${fieldClass} min-h-28 resize-none`} value={formData.results} onChange={(event) => updateField('results', event.target.value)} placeholder="Chuyển biến ở trẻ, giáo viên, phụ huynh và khả năng nhân rộng" /></div>
             <button type="button" onClick={onGenerateOutline} className="min-h-11 rounded-xl bg-teal-700 px-5 text-sm font-black text-white shadow hover:bg-teal-800">Tạo dàn ý chuẩn</button>
+            {outline && (
+              <section aria-labelledby="outline-title" className="rounded-2xl border-2 border-teal-200 bg-white p-5 shadow-sm">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h4 id="outline-title" className="font-black text-teal-900">Dàn ý được tạo tại máy</h4><span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-bold text-teal-800">Không dùng API AI</span></div>
+                <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700">{outline}</div>
+              </section>
+            )}
           </div>
         )}
 

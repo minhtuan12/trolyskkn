@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import WriterAssistant from './components/WriterAssistant.jsx';
+import { WRITER_SUGGESTIONS, buildLocalOutline, pickRandomSuggestions } from './data/writerSuggestions.js';
 
 // ==================== CÁC BỘ TIÊU CHÍ CHẤM ĐIỂM CHUẨN MẦM NON ====================
 const PRESET_CRITERIA_SETS = [
@@ -182,6 +183,8 @@ export default function App() {
     const [advSuggestions, setAdvSuggestions] = useState([]);
     const [diffSuggestions, setDiffSuggestions] = useState([]);
     const [measureSuggestions, setMeasureSuggestions] = useState([]);
+    const [titleSuggestions, setTitleSuggestions] = useState([]);
+    const [outline, setOutline] = useState('');
     const [suggestingField, setSuggestingField] = useState(null);
 
     // State Module Chấm điểm Sáng kiến
@@ -615,49 +618,18 @@ CẤU TRÚC KẾT QUẢ:
         showNotification("Đã xuất phiếu chấm sáng kiến sang Word (.doc) thành công!");
     };
 
-    // AI gợi ý thông minh cho Thuận lợi, Khó khăn, Biện pháp
-    const handleSuggestField = async (fieldType) => {
-        const topic = formData.title || 'Hoạt động giáo dục mầm non';
-        const ageGroup = formData.audience || 'Trẻ mẫu giáo bé (3 - 4 tuổi)';
-        const domain = formData.field || 'Giáo dục Mầm non';
-
+    // Gợi ý cục bộ cho Thuận lợi, Khó khăn, Biện pháp — không gọi API AI.
+    const handleSuggestField = (fieldType) => {
+        const catalog = WRITER_SUGGESTIONS[fieldType] || [];
+        const list = pickRandomSuggestions(catalog, 6);
         setSuggestingField(fieldType);
 
-        let fieldPromptDesc = '';
-        if (fieldType === 'advantages') {
-            fieldPromptDesc = '6 điểm thuận lợi thực tế (sự quan tâm chỉ đạo của BGH nhà trường Tô Hiến Thành, cơ sở vật chất lớp học mầm non, giáo viên tâm huyết yêu trẻ, phụ huynh ủng hộ, khuôn viên nhiều cây xanh)';
-        } else if (fieldType === 'difficulties') {
-            fieldPromptDesc = '6 khó khăn rào cản điển hình (đặc điểm tâm sinh lý lứa tuổi, trẻ mới từ nhà trẻ lên còn khóc, vận động tinh cơ tay vụng về, cầm bút sáp/xé dán lóng ngóng, sợ dính bẩn, phụ huynh làm thay)';
-        } else {
-            fieldPromptDesc = '6 biện pháp sư phạm sáng tạo, chi tiết (góc nghệ thuật mở, tích hợp trò chơi/đồng dao, rèn kỹ năng từ dễ đến khó: in dấu vân tay, chấm tăm bông, xé dán giấy mềm, tận dụng nguyên vật liệu thiên nhiên, triển lãm tranh nhí, phối hợp phụ huynh)';
-        }
+        if (fieldType === 'advantages') setAdvSuggestions(list);
+        else if (fieldType === 'difficulties') setDiffSuggestions(list);
+        else setMeasureSuggestions(list);
 
-        const systemPrompt = `Bạn là chuyên gia tư vấn viết Sáng kiến kinh nghiệm bậc Mầm non Việt Nam.
-Hãy đề xuất chính xác ${fieldPromptDesc} dành cho đề tài sau.
-Trả lời bằng danh sách các câu hoàn chỉnh, thực tế, mỗi câu một dòng, KHÔNG đánh số thứ tự đầu dòng, KHÔNG dùng gạch đầu dòng.`;
-
-        const userPrompt = `Đề tài: ${topic}\nĐối tượng: ${ageGroup}\nLĩnh vực: ${domain}\nTrường: ${formData.school}`;
-
-        try {
-            const res = await callGemini(userPrompt, systemPrompt, `Đang gợi ý nội dung ${fieldType === 'advantages' ? 'thuận lợi' : fieldType === 'difficulties' ? 'khó khăn' : 'biện pháp'}...`);
-            if (res) {
-                const list = res
-                    .split('\n')
-                    .map(line => line.replace(/^[\d\.\-\*\•\+]\s*/, '').trim())
-                    .filter(line => line.length > 10)
-                    .slice(0, 6);
-
-                if (fieldType === 'advantages') setAdvSuggestions(list);
-                else if (fieldType === 'difficulties') setDiffSuggestions(list);
-                else setMeasureSuggestions(list);
-
-                showNotification(`Đã tìm thấy gợi ý ${fieldType === 'advantages' ? 'thuận lợi' : fieldType === 'difficulties' ? 'khó khăn' : 'biện pháp'} phù hợp! 🌸`);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setSuggestingField(null);
-        }
+        setSuggestingField(null);
+        showNotification(`Đã chọn ngẫu nhiên ${list.length} gợi ý có sẵn, không dùng API AI.`);
     };
 
     const appendSuggestion = (fieldType, text) => {
@@ -681,33 +653,18 @@ Trả lời bằng danh sách các câu hoàn chỉnh, thực tế, mỗi câu m
         appendAllSuggestions(fieldType, list);
     };
 
-    // Tối ưu tên đề tài
-    const handleOptimizeTitle = async () => {
-        if (!formData.title) {
-            showNotification("Vui lòng nhập tên đề tài hoặc ý tưởng trước nhé!");
-            return;
-        }
-        const systemPrompt = "Bạn là chuyên gia thẩm định SKKN giáo dục mầm non Việt Nam. Hãy đưa ra 5 phương án đặt tên đề tài chuẩn chỉnh, có từ khóa đắt giá (Biện pháp, Giải pháp, Rèn luyện, Xây dựng môi trường...), gắn với Trường Mầm non Tô Hiến Thành. Thêm icon đầu dòng và lý do nên chọn.";
-        const userPrompt = `Đề tài gốc: ${formData.title}. Lĩnh vực: ${formData.field}. Đối tượng: ${formData.audience}. Đơn vị: ${formData.school}`;
-        const res = await callGemini(userPrompt, systemPrompt, "Đang tối ưu tên đề tài sáng kiến...");
-        if (res) {
-            setResult(res);
-            setStep(2);
-        }
+    // Gợi ý tên đề tài từ kho cục bộ.
+    const handleOptimizeTitle = () => {
+        setTitleSuggestions(pickRandomSuggestions(WRITER_SUGGESTIONS.titles, 6));
+        setStep(2);
+        showNotification("Đã chọn 6 tên đề tài từ kho 50 mẫu có sẵn.");
     };
 
-    // Lập dàn ý
-    const handleGenerateOutline = async () => {
-        const systemPrompt = `Bạn là chuyên gia hướng dẫn viết SKKN mầm non. Hãy lập dàn ý chi tiết chuẩn cấu trúc:
-A. ĐẶT VẤN ĐỀ (Lý do chọn đề tài, Mục đích, Đối tượng & phạm vi, Phương pháp nghiên cứu).
-B. GIẢI QUYẾT VẤN ĐỀ (Cơ sở lý luận sư phạm, Thực trạng thuận lợi & khó khăn, Số liệu khảo sát đầu năm, Các biện pháp thực hiện chi tiết 1 2 3, Hiệu quả và bảng đối chứng).
-C. KẾT LUẬN VÀ KIẾN NGHỊ.`;
-        const userPrompt = `Đề tài: ${formData.title}\nTrường: ${formData.school}\nTác giả: ${formData.author}\nThuận lợi: ${formData.advantages}\nKhó khăn: ${formData.difficulties}\nBiện pháp: ${formData.measures}`;
-        const res = await callGemini(userPrompt, systemPrompt, "Đang lập dàn ý chi tiết...");
-        if (res) {
-            setResult(res);
-            setStep(3);
-        }
+    // Lập dàn ý theo cấu trúc chuẩn từ dữ liệu đã nhập, không gọi API AI.
+    const handleGenerateOutline = () => {
+        setOutline(buildLocalOutline(formData));
+        setStep(3);
+        showNotification("Đã tạo dàn ý A–B–C từ dữ liệu hiện có.");
     };
 
     // Viết toàn văn SKKN
@@ -980,6 +937,8 @@ Kết quả: ${formData.results}`;
                         advSuggestions={advSuggestions}
                         diffSuggestions={diffSuggestions}
                         measureSuggestions={measureSuggestions}
+                        titleSuggestions={titleSuggestions}
+                        outline={outline}
                         suggestingField={suggestingField}
                         onSuggestField={handleSuggestField}
                         onAppendSuggestion={appendSuggestion}
@@ -987,6 +946,16 @@ Kết quả: ${formData.results}`;
                         onPresetSuggestions={applyPresetSuggestions}
                         onOptimizeTitle={handleOptimizeTitle}
                         onGenerateOutline={handleGenerateOutline}
+                        onApplyTitle={(title) => {
+                            setFormData((current) => ({ ...current, title }));
+                            showNotification("Đã áp dụng tên đề tài đã chọn.");
+                        }}
+                        onClearSuggestions={(fieldType) => {
+                            if (fieldType === 'advantages') setAdvSuggestions([]);
+                            else if (fieldType === 'difficulties') setDiffSuggestions([]);
+                            else if (fieldType === 'measures') setMeasureSuggestions([]);
+                            else if (fieldType === 'titles') setTitleSuggestions([]);
+                        }}
                         onGenerateFullText={handleGenerateFullText}
                         onExportWord={handleExportWriterWord}
                         onTransferToEvaluator={transferToEvaluator}
