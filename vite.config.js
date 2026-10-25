@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import process from 'node:process'
 import { defineConfig, loadEnv } from 'vite'
+import { configDefaults } from 'vitest/config'
 import { generateGeminiContent } from './server/gemini.js'
 
 function geminiDevApi(apiKey) {
@@ -46,5 +47,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss(), geminiDevApi(env.GEMINI_API_KEY)],
+    test: {
+      exclude: [...configDefaults.exclude, '.worktrees/**'],
+    },
   }
 })
