@@ -270,10 +270,10 @@ export default function App() {
         setLoading(true);
         setLoadingMessage(msg);
         setError(null);
-        
+
         let retries = 0;
         const maxRetries = 3;
-        
+
         const executeRequest = async () => {
             try {
                 const response = await fetch('/api/gemini', {
@@ -629,7 +629,7 @@ CẤU TRÚC KẾT QUẢ:
         else setMeasureSuggestions(list);
 
         setSuggestingField(null);
-        showNotification(`Đã chọn ngẫu nhiên ${list.length} gợi ý có sẵn, không dùng API AI.`);
+        showNotification(`Đã chọn ngẫu nhiên ${list.length} gợi ý.`);
     };
 
     const appendSuggestion = (fieldType, text) => {
@@ -662,14 +662,14 @@ CẤU TRÚC KẾT QUẢ:
         const suggestions = pickRandomSuggestions(catalog, 6);
         setTitleSuggestions(suggestions);
         setStep(2);
-        showNotification(`Đã chọn ${suggestions.length} tên đề tài từ kho 50 mẫu có sẵn.`);
+        showNotification(`Đã chọn ${suggestions.length} tên đề tài tối ưu.`);
     };
 
     // Lập dàn ý theo cấu trúc chuẩn từ dữ liệu đã nhập, không gọi API AI.
     const handleGenerateOutline = () => {
         setOutline(buildLocalOutline(formData));
         setStep(3);
-        showNotification("Đã tạo dàn ý A–B–C từ dữ liệu hiện có.");
+        showNotification("Đã tạo dàn ý A–B–C.");
     };
 
     // Viết toàn văn SKKN
@@ -898,11 +898,10 @@ Kết quả: ${formData.results}`;
                 <div className="flex items-center bg-white/20 backdrop-blur-md p-1.5 rounded-2xl border border-white/30 gap-1.5">
                     <button
                         onClick={() => setAppMode('writer')}
-                        className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-2 shadow-sm ${
-                            appMode === 'writer'
-                                ? 'bg-white text-teal-900 shadow-lg scale-105'
-                                : 'text-white hover:bg-white/10'
-                        }`}
+                        className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-2 shadow-sm ${appMode === 'writer'
+                            ? 'bg-white text-teal-900 shadow-lg scale-105'
+                            : 'text-white hover:bg-white/10'
+                            }`}
                     >
                         <span className="text-base">✍️</span>
                         <span>TRỢ LÝ SOẠN THẢO</span>
@@ -910,11 +909,10 @@ Kết quả: ${formData.results}`;
 
                     <button
                         onClick={() => setAppMode('evaluator')}
-                        className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-2 shadow-sm ${
-                            appMode === 'evaluator'
-                                ? 'bg-white text-emerald-900 shadow-lg scale-105'
-                                : 'text-white hover:bg-white/10'
-                        }`}
+                        className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-2 shadow-sm ${appMode === 'evaluator'
+                            ? 'bg-white text-emerald-900 shadow-lg scale-105'
+                            : 'text-white hover:bg-white/10'
+                            }`}
                     >
                         <span className="text-base">⚖️</span>
                         <span>CHẤM ĐIỂM SÁNG KIẾN</span>
@@ -982,14 +980,13 @@ Kết quả: ${formData.results}`;
                                 { step: 3, label: '3. Lập dàn ý chuẩn', icon: '🏗️' },
                                 { step: 4, label: '4. Toàn văn SKKN', icon: '🏆' }
                             ].map((item) => (
-                                <button 
+                                <button
                                     key={item.step}
                                     onClick={() => setStep(item.step)}
-                                    className={`py-2.5 px-5 whitespace-nowrap text-xs md:text-sm font-extrabold transition-all rounded-xl flex items-center gap-2 ${
-                                        step === item.step 
-                                            ? 'text-white bg-gradient-to-r from-emerald-600 to-sky-600 shadow-md' 
-                                            : 'text-slate-600 hover:text-emerald-700 hover:bg-emerald-50'
-                                    }`}
+                                    className={`py-2.5 px-5 whitespace-nowrap text-xs md:text-sm font-extrabold transition-all rounded-xl flex items-center gap-2 ${step === item.step
+                                        ? 'text-white bg-gradient-to-r from-emerald-600 to-sky-600 shadow-md'
+                                        : 'text-slate-600 hover:text-emerald-700 hover:bg-emerald-50'
+                                        }`}
                                 >
                                     <span className="text-base">{item.icon}</span>
                                     {item.label}
@@ -1006,7 +1003,7 @@ Kết quả: ${formData.results}`;
                                             <span className="bg-emerald-100 p-1.5 rounded-xl">🎨</span>
                                             Dữ liệu lớp mầm non
                                         </h2>
-                                        <button 
+                                        <button
                                             onClick={() => setShowTemplatesModal(true)}
                                             className="text-xs font-black text-teal-700 hover:underline flex items-center gap-1"
                                         >
@@ -1018,18 +1015,18 @@ Kết quả: ${formData.results}`;
                                         <div className="grid grid-cols-2 gap-2.5 bg-emerald-50/60 p-3 rounded-2xl border-2 border-emerald-200">
                                             <div>
                                                 <label className="text-[10px] font-black text-emerald-900 uppercase block mb-1">Tác giả 👩‍🏫</label>
-                                                <input 
-                                                    className="w-full bg-white border border-emerald-200 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none" 
+                                                <input
+                                                    className="w-full bg-white border border-emerald-200 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none"
                                                     value={formData.author}
-                                                    onChange={e => setFormData({...formData, author: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, author: e.target.value })}
                                                 />
                                             </div>
                                             <div>
                                                 <label className="text-[10px] font-black text-emerald-900 uppercase block mb-1">Năm học 📅</label>
-                                                <input 
-                                                    className="w-full bg-white border border-emerald-200 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none" 
+                                                <input
+                                                    className="w-full bg-white border border-emerald-200 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none"
                                                     value={formData.schoolYear}
-                                                    onChange={e => setFormData({...formData, schoolYear: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, schoolYear: e.target.value })}
                                                 />
                                             </div>
                                         </div>
@@ -1044,10 +1041,10 @@ Kết quả: ${formData.results}`;
                                                     ✨ Tối ưu tên
                                                 </button>
                                             </div>
-                                            <textarea 
+                                            <textarea
                                                 className="w-full bg-emerald-50/40 border-2 border-emerald-200 focus:border-emerald-500 p-3 rounded-2xl outline-none text-xs font-bold text-slate-800 h-20 resize-none"
                                                 value={formData.title}
-                                                onChange={e => setFormData({...formData, title: e.target.value})}
+                                                onChange={e => setFormData({ ...formData, title: e.target.value })}
                                                 placeholder="Nhập tên đề tài hoặc ý tưởng cốt lõi của sáng kiến..."
                                             />
                                         </div>
@@ -1055,19 +1052,19 @@ Kết quả: ${formData.results}`;
                                         <div className="grid grid-cols-2 gap-2">
                                             <div>
                                                 <label className="text-[10px] font-black text-amber-800 uppercase block mb-1">Lĩnh vực 📚</label>
-                                                <input 
-                                                    className="w-full bg-amber-50/60 border border-amber-300 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none" 
+                                                <input
+                                                    className="w-full bg-amber-50/60 border border-amber-300 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none"
                                                     value={formData.field}
-                                                    onChange={e => setFormData({...formData, field: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, field: e.target.value })}
                                                     placeholder="VD: Phát triển thẩm mỹ..."
                                                 />
                                             </div>
                                             <div>
                                                 <label className="text-[10px] font-black text-sky-800 uppercase block mb-1">Đối tượng trẻ 👶</label>
-                                                <input 
-                                                    className="w-full bg-sky-50/60 border border-sky-300 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none" 
+                                                <input
+                                                    className="w-full bg-sky-50/60 border border-sky-300 p-2 rounded-xl text-xs font-bold text-slate-800 outline-none"
                                                     value={formData.audience}
-                                                    onChange={e => setFormData({...formData, audience: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, audience: e.target.value })}
                                                     placeholder="VD: Trẻ mẫu giáo bé (3 - 4 tuổi)..."
                                                 />
                                             </div>
@@ -1088,7 +1085,7 @@ Kết quả: ${formData.results}`;
                                                             >
                                                                 Mẫu sẵn
                                                             </button>
-                                                            <button 
+                                                            <button
                                                                 type="button"
                                                                 onClick={() => handleSuggestField('advantages')}
                                                                 disabled={suggestingField === 'advantages'}
@@ -1098,10 +1095,10 @@ Kết quả: ${formData.results}`;
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <textarea 
+                                                    <textarea
                                                         className="w-full bg-white border border-emerald-200 focus:border-emerald-500 p-2 rounded-xl text-xs font-semibold text-slate-800 h-24 resize-none outline-none leading-relaxed"
                                                         value={formData.advantages}
-                                                        onChange={e => setFormData({...formData, advantages: e.target.value})}
+                                                        onChange={e => setFormData({ ...formData, advantages: e.target.value })}
                                                         placeholder="Nhập thuận lợi hoặc bấm Gợi ý..."
                                                     />
                                                 </div>
@@ -1111,7 +1108,7 @@ Kết quả: ${formData.results}`;
                                                         <div className="flex justify-between items-center text-[10px] font-black text-emerald-800">
                                                             <span>Gợi ý thuận lợi (Bấm để thêm):</span>
                                                             <div className="flex items-center gap-1.5">
-                                                                <button 
+                                                                <button
                                                                     onClick={() => appendAllSuggestions('advantages', advSuggestions)}
                                                                     className="text-[9px] font-black text-emerald-700 hover:underline"
                                                                 >
@@ -1122,7 +1119,7 @@ Kết quả: ${formData.results}`;
                                                         </div>
                                                         <div className="space-y-1 max-h-36 overflow-y-auto pr-0.5">
                                                             {advSuggestions.map((item, idx) => (
-                                                                <div 
+                                                                <div
                                                                     key={idx}
                                                                     onClick={() => appendSuggestion('advantages', item)}
                                                                     className="text-[10px] bg-emerald-50/70 hover:bg-emerald-100 p-1.5 rounded-lg text-emerald-950 cursor-pointer font-medium transition-all flex items-start gap-1"
@@ -1149,7 +1146,7 @@ Kết quả: ${formData.results}`;
                                                             >
                                                                 Mẫu sẵn
                                                             </button>
-                                                            <button 
+                                                            <button
                                                                 type="button"
                                                                 onClick={() => handleSuggestField('difficulties')}
                                                                 disabled={suggestingField === 'difficulties'}
@@ -1159,10 +1156,10 @@ Kết quả: ${formData.results}`;
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <textarea 
+                                                    <textarea
                                                         className="w-full bg-white border border-rose-200 focus:border-rose-500 p-2 rounded-xl text-xs font-semibold text-slate-800 h-24 resize-none outline-none leading-relaxed"
                                                         value={formData.difficulties}
-                                                        onChange={e => setFormData({...formData, difficulties: e.target.value})}
+                                                        onChange={e => setFormData({ ...formData, difficulties: e.target.value })}
                                                         placeholder="Nhập khó khăn hoặc bấm Gợi ý..."
                                                     />
                                                 </div>
@@ -1172,7 +1169,7 @@ Kết quả: ${formData.results}`;
                                                         <div className="flex justify-between items-center text-[10px] font-black text-rose-800">
                                                             <span>Gợi ý khó khăn (Bấm để thêm):</span>
                                                             <div className="flex items-center gap-1.5">
-                                                                <button 
+                                                                <button
                                                                     onClick={() => appendAllSuggestions('difficulties', diffSuggestions)}
                                                                     className="text-[9px] font-black text-rose-700 hover:underline"
                                                                 >
@@ -1183,7 +1180,7 @@ Kết quả: ${formData.results}`;
                                                         </div>
                                                         <div className="space-y-1 max-h-36 overflow-y-auto pr-0.5">
                                                             {diffSuggestions.map((item, idx) => (
-                                                                <div 
+                                                                <div
                                                                     key={idx}
                                                                     onClick={() => appendSuggestion('difficulties', item)}
                                                                     className="text-[10px] bg-rose-50/70 hover:bg-rose-100 p-1.5 rounded-lg text-rose-950 cursor-pointer font-medium transition-all flex items-start gap-1"
@@ -1210,7 +1207,7 @@ Kết quả: ${formData.results}`;
                                                     >
                                                         Biện pháp mẫu
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         type="button"
                                                         onClick={() => handleSuggestField('measures')}
                                                         disabled={suggestingField === 'measures'}
@@ -1220,10 +1217,10 @@ Kết quả: ${formData.results}`;
                                                     </button>
                                                 </div>
                                             </div>
-                                            <textarea 
+                                            <textarea
                                                 className="w-full bg-white border border-teal-200 focus:border-teal-500 p-2.5 rounded-xl text-xs font-semibold text-slate-800 h-24 resize-none outline-none leading-relaxed"
                                                 value={formData.measures}
-                                                onChange={e => setFormData({...formData, measures: e.target.value})}
+                                                onChange={e => setFormData({ ...formData, measures: e.target.value })}
                                                 placeholder="Nhập các biện pháp sư phạm hoặc bấm AI Gợi ý..."
                                             />
 
@@ -1232,7 +1229,7 @@ Kết quả: ${formData.results}`;
                                                     <div className="flex justify-between items-center text-[10px] font-black text-teal-900">
                                                         <span>Gợi ý biện pháp sáng tạo từ AI:</span>
                                                         <div className="flex items-center gap-1.5">
-                                                            <button 
+                                                            <button
                                                                 onClick={() => appendAllSuggestions('measures', measureSuggestions)}
                                                                 className="text-[9px] font-black text-teal-700 hover:underline"
                                                             >
@@ -1243,7 +1240,7 @@ Kết quả: ${formData.results}`;
                                                     </div>
                                                     <div className="space-y-1 max-h-40 overflow-y-auto pr-0.5">
                                                         {measureSuggestions.map((item, idx) => (
-                                                            <div 
+                                                            <div
                                                                 key={idx}
                                                                 onClick={() => appendSuggestion('measures', item)}
                                                                 className="text-[11px] bg-teal-50/70 hover:bg-teal-100 p-1.5 rounded-lg text-teal-950 cursor-pointer font-medium transition-all flex items-start gap-1"
@@ -1258,7 +1255,7 @@ Kết quả: ${formData.results}`;
                                         </div>
 
                                         <div className="pt-2">
-                                            <button 
+                                            <button
                                                 onClick={handleGenerateFullText}
                                                 className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 hover:from-emerald-700 hover:to-sky-700 text-white py-3.5 rounded-2xl font-black text-xs shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                                             >
@@ -1277,9 +1274,8 @@ Kết quả: ${formData.results}`;
                                         <button
                                             onClick={transferToEvaluator}
                                             disabled={!result}
-                                            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-sm ${
-                                                result ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                                            }`}
+                                            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-sm ${result ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                                }`}
                                         >
                                             <span>⚖️</span> Chuyển sang CHẤM ĐIỂM
                                         </button>
@@ -1288,18 +1284,17 @@ Kết quả: ${formData.results}`;
                                             <button
                                                 onClick={handleExportWriterWord}
                                                 disabled={!result}
-                                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-md active:scale-95 ${
-                                                    result 
-                                                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white' 
-                                                        : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                                                }`}
+                                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-md active:scale-95 ${result
+                                                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white'
+                                                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                                    }`}
                                                 title="Tải toàn văn bài viết kèm trang bìa chuẩn Microsoft Word"
                                             >
                                                 <span>📥</span>
                                                 <span>Tải file Word (.doc)</span>
                                             </button>
 
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     if (!result) return;
                                                     navigator.clipboard.writeText(result);
@@ -1331,7 +1326,7 @@ Kết quả: ${formData.results}`;
                                                 <span className="text-5xl">✍️</span>
                                                 <h3 className="text-base font-bold text-slate-600">Trợ Lý Soạn Thảo SKKN</h3>
                                                 <p className="text-xs text-center max-w-sm">
-                                                    Nhập dữ liệu ở cột bên trái để AI hỗ trợ viết bài hoặc chuyển sang tab <strong>"CHẤM ĐIỂM SÁNG KIẾN"</strong> trên thanh tiêu đề để thẩm định bài có sẵn.
+                                                    Nhập dữ liệu ở cột bên trái để AI hỗ trợ viết bài hoặc chuyển sang tab <strong>"CHẤM ĐIỂM SÁNG KIẾN"</strong> trên thanh tiêu đề để thẩm định bài.
                                                 </p>
                                             </div>
                                         )}
@@ -1360,11 +1355,10 @@ Kết quả: ${formData.results}`;
                                     <button
                                         key={tab.id}
                                         onClick={() => setEvalTab(tab.id)}
-                                        className={`px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-1.5 ${
-                                            evalTab === tab.id
-                                                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
-                                                : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-800'
-                                        }`}
+                                        className={`px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-1.5 ${evalTab === tab.id
+                                            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+                                            : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-800'
+                                            }`}
                                     >
                                         <span>{tab.icon}</span>
                                         <span>{tab.label}</span>
@@ -1752,11 +1746,10 @@ Kết quả: ${formData.results}`;
                                         <div
                                             key={preset.id}
                                             onClick={() => handleSelectPreset(preset.id)}
-                                            className={`p-4 rounded-2xl border-3 cursor-pointer transition-all ${
-                                                selectedPresetId === preset.id
-                                                    ? 'border-emerald-500 bg-emerald-50/70 shadow-md'
-                                                    : 'border-slate-200 hover:border-emerald-300 bg-white'
-                                            }`}
+                                            className={`p-4 rounded-2xl border-3 cursor-pointer transition-all ${selectedPresetId === preset.id
+                                                ? 'border-emerald-500 bg-emerald-50/70 shadow-md'
+                                                : 'border-slate-200 hover:border-emerald-300 bg-white'
+                                                }`}
                                         >
                                             <div className="flex justify-between items-center mb-1">
                                                 <span className="text-xs font-black text-emerald-800">{preset.name}</span>
@@ -1829,7 +1822,7 @@ Kết quả: ${formData.results}`;
                             <h3 className="text-sm font-black text-emerald-900 flex items-center gap-2">
                                 <span>📚</span> Kho đề tài Sáng kiến kinh nghiệm Mầm non mẫu
                             </h3>
-                            <button 
+                            <button
                                 onClick={() => setShowTemplatesModal(false)}
                                 className="text-slate-400 hover:text-rose-600 font-black text-base"
                             >
@@ -1838,7 +1831,7 @@ Kết quả: ${formData.results}`;
                         </div>
                         <div className="space-y-2.5">
                             {SAMPLE_TOPICS.map((item, idx) => (
-                                <div 
+                                <div
                                     key={idx}
                                     onClick={() => {
                                         setFormData(prev => ({ ...prev, title: item.title, field: item.field, audience: item.audience }));

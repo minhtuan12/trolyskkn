@@ -199,7 +199,7 @@ export default function WriterAssistant({
             <button type="button" onClick={onGenerateOutline} className="min-h-11 rounded-xl bg-teal-700 px-5 text-sm font-black text-white shadow hover:bg-teal-800">Tạo dàn ý chuẩn</button>
             {outline && (
               <section aria-labelledby="outline-title" className="rounded-2xl border-2 border-teal-200 bg-white p-5 shadow-sm">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h4 id="outline-title" className="font-black text-teal-900">Dàn ý được tạo tại máy</h4><span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-bold text-teal-800">Không dùng API AI</span></div>
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h4 id="outline-title" className="font-black text-teal-900">Dàn ý được tạo</h4></div>
                 <div className="whitespace-pre-wrap text-sm leading-7 text-slate-700">{outline}</div>
               </section>
             )}
