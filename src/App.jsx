@@ -303,7 +303,7 @@ export default function App() {
             const text = await executeRequest();
             setLoading(false);
             return text;
-        } catch (err) {
+        } catch {
             setLoading(false);
             setError("Đã có sự cố kết nối AI. Thầy Cô vui lòng kiểm tra kết nối mạng hoặc thử lại nhé! 🌿");
             return null;
@@ -708,7 +708,7 @@ Kết quả: ${formData.results}`;
             .replace(/^### (.*$)/gim, '<h3 style="font-size: 13pt; font-weight: bold; margin-top: 12px; margin-bottom: 6px; color: #000;">$1</h3>')
             .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-            .replace(/^\- (.*$)/gim, '<li style="font-size: 13pt; margin-bottom: 5px; text-align: justify;">$1</li>')
+            .replace(/^- (.*$)/gim, '<li style="font-size: 13pt; margin-bottom: 5px; text-align: justify;">$1</li>')
             .replace(/\n\n/g, '</p><p style="font-size: 13pt; text-indent: 1.27cm; line-height: 1.5; margin-bottom: 8px; text-align: justify;">')
             .replace(/\n/g, '<br/>');
 
@@ -967,7 +967,7 @@ Kết quả: ${formData.results}`;
                         onOpenTemplates={() => setShowTemplatesModal(true)}
                     />
                 )}
-                {false && (
+                {appMode === 'legacy-writer' && (
                     <div className="space-y-4">
                         {/* Thanh chỉ mục tiến trình */}
                         <div className="flex justify-between mb-4 bg-white/90 p-2 rounded-2xl backdrop-blur-md overflow-x-auto gap-2 border-2 border-emerald-200 shadow-md">

@@ -111,6 +111,14 @@ export default function WriterAssistant({
               aria-controls={`writer-panel-${item.id}`}
               id={`writer-tab-${item.id}`}
               onClick={() => setStep(item.id)}
+              onKeyDown={(event) => {
+                const direction = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0
+                if (!direction) return
+                event.preventDefault()
+                const nextStep = ((item.id - 1 + direction + STEPS.length) % STEPS.length) + 1
+                setStep(nextStep)
+                requestAnimationFrame(() => document.getElementById(`writer-tab-${nextStep}`)?.focus())
+              }}
               className={`min-h-11 rounded-xl px-4 py-2 text-left text-xs font-black transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${step === item.id ? 'bg-gradient-to-r from-emerald-700 to-sky-700 text-white shadow-md' : 'bg-slate-50 text-slate-600 hover:bg-emerald-50 hover:text-emerald-800'}`}
             >
               <span aria-hidden="true" className="mr-2 text-base">{item.icon}</span>
@@ -205,7 +213,7 @@ export default function WriterAssistant({
               {loading ? loadingMessage : 'Viết toàn văn sáng kiến kinh nghiệm'}
             </button>
 
-            <section aria-labelledby="writer-result-title" className="overflow-hidden rounded-3xl border-2 border-emerald-200 bg-white shadow-lg">
+            <section role="status" aria-live="polite" aria-labelledby="writer-result-title" className="overflow-hidden rounded-3xl border-2 border-emerald-200 bg-white shadow-lg">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-100 bg-emerald-50 p-4"><h4 id="writer-result-title" className="font-black text-emerald-900">Kết quả toàn văn</h4><div className="flex flex-wrap gap-2"><button type="button" onClick={onTransferToEvaluator} disabled={!result} className="min-h-11 rounded-xl border border-emerald-200 bg-white px-3 text-xs font-black text-emerald-800 disabled:cursor-not-allowed disabled:opacity-50">Chuyển sang chấm điểm</button><button type="button" onClick={onExportWord} disabled={!result} className="min-h-11 rounded-xl bg-blue-700 px-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-50">Tải file Word</button><button type="button" onClick={onCopyResult} disabled={!result} className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 disabled:cursor-not-allowed disabled:opacity-50">Sao chép</button></div></div>
               <div className="min-h-72 p-5 md:p-7">{result ? <div className="whitespace-pre-wrap text-sm leading-7 text-slate-800">{result}</div> : <div className="flex min-h-60 flex-col items-center justify-center text-center text-slate-500"><span aria-hidden="true" className="text-4xl">✍️</span><p className="mt-3 font-black text-slate-700">Chưa có bản toàn văn</p><p className="mt-1 max-w-lg text-sm">Hoàn thiện ba bước trước, sau đó dùng nút viết toàn văn ở phía trên.</p></div>}</div>
             </section>

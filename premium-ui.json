@@ -1,0 +1,18 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["src"],
+  "locale": "vi-VN",
+  "requiredCapabilities": ["Select/Listbox"],
+  "ownership": {
+    "Select/Listbox": "native"
+  },
+  "requiredCommands": ["unit", "lint", "build"],
+  "commands": {
+    "unit": "npm.cmd test",
+    "lint": "npm.cmd run lint",
+    "build": "npm.cmd run build"
+  },
+  "evidence": {
+    "writerWorkflow": "src/App.writer.test.jsx"
+  }
+}
