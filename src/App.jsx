@@ -654,10 +654,15 @@ CẤU TRÚC KẾT QUẢ:
     };
 
     // Gợi ý tên đề tài từ kho cục bộ.
-    const handleOptimizeTitle = () => {
-        setTitleSuggestions(pickRandomSuggestions(WRITER_SUGGESTIONS.titles, 6));
+    const handleOptimizeTitle = (topic = '') => {
+        const normalizedTopic = topic.trim().toLocaleLowerCase('vi-VN');
+        const catalog = normalizedTopic
+            ? WRITER_SUGGESTIONS.titles.filter((title) => title.toLocaleLowerCase('vi-VN').includes(normalizedTopic))
+            : WRITER_SUGGESTIONS.titles;
+        const suggestions = pickRandomSuggestions(catalog, 6);
+        setTitleSuggestions(suggestions);
         setStep(2);
-        showNotification("Đã chọn 6 tên đề tài từ kho 50 mẫu có sẵn.");
+        showNotification(`Đã chọn ${suggestions.length} tên đề tài từ kho 50 mẫu có sẵn.`);
     };
 
     // Lập dàn ý theo cấu trúc chuẩn từ dữ liệu đã nhập, không gọi API AI.

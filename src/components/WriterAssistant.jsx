@@ -89,6 +89,7 @@ export default function WriterAssistant({
   onOpenTemplates,
 }) {
   const workflowId = React.useId()
+  const [titleTopic, setTitleTopic] = React.useState('')
   const updateField = (field, value) => setFormData((current) => ({ ...current, [field]: value }))
 
   return (
@@ -169,7 +170,10 @@ export default function WriterAssistant({
           <div className="space-y-5">
             <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.16em] text-sky-700">Bước 2 · Trọng tâm sáng kiến</p><h3 className="mt-1 text-xl font-black text-slate-900">Chọn tên đề tài rõ trọng tâm</h3><p className="mt-1 text-sm text-slate-600">Tên tốt nêu rõ giải pháp, nhóm trẻ và kết quả giáo dục cần cải thiện.</p></div><button type="button" onClick={onOpenTemplates} className="min-h-11 rounded-xl border-2 border-sky-200 bg-sky-50 px-4 text-xs font-black text-sky-800 hover:bg-sky-100">Mẫu đề tài hay</button></header>
             <div><label htmlFor="writer-title" className="mb-1 block text-sm font-black text-slate-800">Ý tưởng hoặc tên đề tài</label><textarea id="writer-title" className={`${fieldClass} min-h-28 resize-none`} value={formData.title} onChange={(event) => updateField('title', event.target.value)} placeholder="Nhập ý tưởng cốt lõi hoặc chọn một gợi ý bên dưới" /></div>
-            <button type="button" onClick={onOptimizeTitle} className="min-h-11 rounded-xl bg-sky-700 px-5 text-sm font-black text-white shadow hover:bg-sky-800">Gợi ý 6 tên đề tài</button>
+            <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+              <div><label htmlFor="writer-title-topic" className="mb-1 block text-sm font-black text-slate-800">Chủ đề gợi ý</label><select id="writer-title-topic" className={fieldClass} value={titleTopic} onChange={(event) => setTitleTopic(event.target.value)}><option value="">Tất cả chủ đề</option><option value="ngôn ngữ">Ngôn ngữ và kể chuyện</option><option value="STEAM">Giáo dục STEAM</option><option value="tự phục vụ">Kỹ năng tự phục vụ</option><option value="cảm xúc">Cảm xúc tích cực</option><option value="vận động tinh">Vận động tinh</option><option value="thiên nhiên">Khám phá thiên nhiên</option><option value="dinh dưỡng">Dinh dưỡng</option><option value="thẩm mỹ">Thẩm mỹ và tạo hình</option><option value="phụ huynh">Phối hợp phụ huynh</option><option value="công nghệ số">Công nghệ số an toàn</option></select></div>
+              <button type="button" onClick={() => onOptimizeTitle(titleTopic)} className="min-h-11 rounded-xl bg-sky-700 px-5 text-sm font-black text-white shadow hover:bg-sky-800">Gợi ý 6 tên đề tài</button>
+            </div>
             {titleSuggestions.length > 0 && (
               <div className="grid gap-3 lg:grid-cols-2">
                 {titleSuggestions.map((title) => (
@@ -213,7 +217,8 @@ export default function WriterAssistant({
               {loading ? loadingMessage : 'Viết toàn văn sáng kiến kinh nghiệm'}
             </button>
 
-            <section role="status" aria-live="polite" aria-labelledby="writer-result-title" className="overflow-hidden rounded-3xl border-2 border-emerald-200 bg-white shadow-lg">
+            <p role="status" aria-live="polite" className="sr-only">{result ? 'Đã tạo xong toàn văn sáng kiến.' : ''}</p>
+            <section role="region" aria-labelledby="writer-result-title" className="overflow-hidden rounded-3xl border-2 border-emerald-200 bg-white shadow-lg">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-100 bg-emerald-50 p-4"><h4 id="writer-result-title" className="font-black text-emerald-900">Kết quả toàn văn</h4><div className="flex flex-wrap gap-2"><button type="button" onClick={onTransferToEvaluator} disabled={!result} className="min-h-11 rounded-xl border border-emerald-200 bg-white px-3 text-xs font-black text-emerald-800 disabled:cursor-not-allowed disabled:opacity-50">Chuyển sang chấm điểm</button><button type="button" onClick={onExportWord} disabled={!result} className="min-h-11 rounded-xl bg-blue-700 px-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-50">Tải file Word</button><button type="button" onClick={onCopyResult} disabled={!result} className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 disabled:cursor-not-allowed disabled:opacity-50">Sao chép</button></div></div>
               <div className="min-h-72 p-5 md:p-7">{result ? <div className="whitespace-pre-wrap text-sm leading-7 text-slate-800">{result}</div> : <div className="flex min-h-60 flex-col items-center justify-center text-center text-slate-500"><span aria-hidden="true" className="text-4xl">✍️</span><p className="mt-3 font-black text-slate-700">Chưa có bản toàn văn</p><p className="mt-1 max-w-lg text-sm">Hoàn thiện ba bước trước, sau đó dùng nút viết toàn văn ở phía trên.</p></div>}</div>
             </section>

@@ -105,6 +105,19 @@ describe('Trợ lý soạn thảo theo bốn bước', () => {
     expect(globalThis.fetch).not.toHaveBeenCalled()
   })
 
+  it('filters local title suggestions by preschool topic', async () => {
+    render(React.createElement(App))
+    openWriterStep(/tối ưu tên đề tài/i)
+
+    fireEvent.change(screen.getByLabelText(/chủ đề gợi ý/i), { target: { value: 'ngôn ngữ' } })
+    fireEvent.click(screen.getByRole('button', { name: /gợi ý.*tên đề tài/i }))
+
+    const choices = await screen.findAllByRole('button', { name: /áp dụng tên đề tài/i })
+    expect(choices).toHaveLength(5)
+    expect(choices.every((choice) => choice.getAttribute('aria-label').toLowerCase().includes('ngôn ngữ'))).toBe(true)
+    expect(globalThis.fetch).not.toHaveBeenCalled()
+  })
+
   it('calls Gemini only when writing the full text in the final step', async () => {
     render(React.createElement(App))
     openWriterStep(/toàn văn skkn/i)
@@ -126,8 +139,10 @@ describe('Trợ lý soạn thảo theo bốn bước', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /viết toàn văn sáng kiến kinh nghiệm/i }))
 
-    const resultRegion = await screen.findByRole('status', { name: /kết quả toàn văn/i })
-    expect(resultRegion).toHaveTextContent('Nội dung toàn văn thử nghiệm')
+    const resultStatus = await screen.findByRole('status')
+    expect(resultStatus).toHaveTextContent('Đã tạo xong toàn văn sáng kiến')
+    expect(resultStatus).not.toHaveTextContent('Nội dung toàn văn thử nghiệm')
+    expect(screen.getByRole('region', { name: /kết quả toàn văn/i })).toHaveTextContent('Nội dung toàn văn thử nghiệm')
     expect(screen.getByRole('button', { name: /chuyển sang chấm điểm/i })).toBeEnabled()
     expect(screen.getByRole('button', { name: /tải file word/i })).toBeEnabled()
 
